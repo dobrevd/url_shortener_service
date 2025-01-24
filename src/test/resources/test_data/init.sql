@@ -28,7 +28,8 @@ VALUES
     ('stu901'),
     ('vwx234'),
     ('yz5678'),
-    ('abc890');
+    ('abc890'),
+    ('acd340');
 
 INSERT INTO url (hash, url, created_at) VALUES
 ('abc123', 'http://example.com/1', NOW() - INTERVAL '1 HOUR'),

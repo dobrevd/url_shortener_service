@@ -12,7 +12,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-@Tag("these tests will not be run")
+@Tag("repository")
 class HashRepositoryTest extends AbstractionBaseTest {
     @Autowired
     private HashRepository repository;

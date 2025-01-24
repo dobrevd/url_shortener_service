@@ -3,14 +3,13 @@ package faang.school.urlshortenerservice.service;
 import faang.school.urlshortenerservice.entity.Url;
 import faang.school.urlshortenerservice.generator.LocalCache;
 import faang.school.urlshortenerservice.mapper.UrlMapper;
-import faang.school.urlshortenerservice.repository.UrlCacheRepository;
+import faang.school.urlshortenerservice.redis.UrlCacheService;
 import faang.school.urlshortenerservice.repository.UrlRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import static faang.school.urlshortenerservice.util.TestDataFactory.HASH;
@@ -37,14 +36,13 @@ class UrlServiceTest {
     @Mock
     private LocalCache localCache;
     @Mock
-    private UrlCacheRepository urlCacheRepository;
+    private UrlCacheService urlCacheService;
     @Mock
     private UrlMapper urlMapper;
 
     @BeforeEach
     void setUp() {
-        MockitoAnnotations.initMocks(this);
-        urlService = new UrlService(urlRepository, localCache, urlCacheRepository, urlMapper);
+        urlService = new UrlService(urlCacheService, localCache, urlRepository, urlMapper);
         urlService.setShortUrlPrefix("https://dd.n/");
     }
 
@@ -69,7 +67,7 @@ class UrlServiceTest {
     @Test
     void givenShortUrlWhenGetUrlThenReturnUrlFromCache() {
         // given - precondition
-        when(urlCacheRepository.getUrl(HASH)).thenReturn(URL);
+        when(urlCacheService.getUrl(HASH)).thenReturn(URL);
 
         // when - action
         var actualResult = urlService.getUrl(SHORT_URL);
@@ -78,7 +76,7 @@ class UrlServiceTest {
         assertThat(actualResult).isNotNull();
         assertThat(actualResult).isEqualTo(URL);
 
-        verify(urlCacheRepository, times(1)).getUrl(HASH);
+        verify(urlCacheService, times(1)).getUrl(HASH);
         verifyNoInteractions(urlRepository);
     }
     @Test
@@ -86,7 +84,7 @@ class UrlServiceTest {
         // given - precondition
         var url = createUrl();
 
-        when(urlCacheRepository.getUrl(HASH)).thenReturn(null);
+        when(urlCacheService.getUrl(HASH)).thenReturn(null);
         when(urlRepository.findById(HASH)).thenReturn(of(url));
 
         // when - action
@@ -96,14 +94,14 @@ class UrlServiceTest {
         assertThat(actualResult).isNotNull();
         assertThat(actualResult).isEqualTo(URL);
 
-        verify(urlCacheRepository, times(1)).getUrl(HASH);
+        verify(urlCacheService, times(1)).getUrl(HASH);
         verify(urlRepository, times(1)).findById(HASH);
     }
 
     @Test
     void givenInvalidShortUrlWhenGetUrlThenThrowException() {
         // given - precondition
-        when(urlCacheRepository.getUrl(HASH)).thenReturn(null);
+        when(urlCacheService.getUrl(HASH)).thenReturn(null);
         when(urlRepository.findById(HASH)).thenReturn(empty());
 
         // when - action
@@ -112,7 +110,7 @@ class UrlServiceTest {
                 .hasMessageContaining("No URL find")
                         .isInstanceOf(IllegalArgumentException.class);
 
-        verify(urlCacheRepository, times(1)).getUrl(HASH);
+        verify(urlCacheService, times(1)).getUrl(HASH);
         verify(urlRepository, times(1)).findById(HASH);
     }
 }
