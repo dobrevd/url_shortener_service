@@ -1,10 +1,10 @@
-package faang.school.urlshortenerservice.repository;
+package faang.school.urlshortenerservice.integration;
 
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.containers.PostgreSQLContainer;
 
-public abstract class AbstractionBaseTest {
+public class AbstractionBaseIT {
     static final PostgreSQLContainer<?> POSTGRE_SQL_CONTAINER;
 
     static {
@@ -12,7 +12,7 @@ public abstract class AbstractionBaseTest {
                 .withDatabaseName("testdb")
                 .withUsername("testuser")
                 .withPassword("testpass")
-                .withInitScript("test_data/init.sql");
+                .withInitScript("test_data/init_it.sql");
 
         POSTGRE_SQL_CONTAINER.start();
     }

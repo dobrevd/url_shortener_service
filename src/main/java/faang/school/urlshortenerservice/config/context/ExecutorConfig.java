@@ -9,16 +9,15 @@ import java.util.concurrent.Executor;
 
 @Configuration
 public class ExecutorConfig {
-    @Value("${app.local_hash_refill.hash_generator.core_pool_size}")
+    @Value("${app.local_hash_refill.core_pool_size}")
     private int corePoolSize;
-    @Value("${app.local_hash_refill.hash_generator.max_pool_size}")
+    @Value("${app.local_hash_refill.max_pool_size}")
     private int maxPoolSize;
-    @Value("${app.local_hash_refill.hash_generator.queue_capacity}")
+    @Value("${app.local_hash_refill.queue_capacity}")
     private int queueCapacity;
-    @Value("${app.local_hash_refill.hash_generator.thread_name_prefix}")
+    @Value("${app.local_hash_refill.thread_name_prefix}")
     private String threadNamePrefix;
-
-    @Bean(name = "refillExecutor")
+    @Bean
     public Executor refillExecutor() {
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
         executor.setCorePoolSize(corePoolSize);

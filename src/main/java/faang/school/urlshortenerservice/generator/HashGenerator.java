@@ -4,8 +4,6 @@ import faang.school.urlshortenerservice.encoder.Base62Encoder;
 import faang.school.urlshortenerservice.mapper.HashMapper;
 import faang.school.urlshortenerservice.repository.HashRepository;
 import jakarta.transaction.Transactional;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;

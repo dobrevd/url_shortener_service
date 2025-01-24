@@ -2,6 +2,7 @@ package faang.school.urlshortenerservice.mapper;
 
 import faang.school.urlshortenerservice.dto.UrlDto;
 import faang.school.urlshortenerservice.entity.Url;
+import faang.school.urlshortenerservice.redis.UrlHash;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
 
@@ -9,4 +10,6 @@ import org.mapstruct.ReportingPolicy;
 public interface UrlMapper {
     Url toEntity(UrlDto urlDto);
     UrlDto toDto(Url url);
+
+    UrlHash toUrlHash(Url url);
 }

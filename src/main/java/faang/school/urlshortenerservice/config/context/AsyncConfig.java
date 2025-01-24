@@ -19,8 +19,7 @@ public class AsyncConfig {
     private int queueCapacity;
     @Value("${app.async.hash_generator.thread_name_prefix}")
     private String threadNamePrefix;
-
-    @Bean(name = "taskExecutor")
+    @Bean
     public Executor taskExecutor() {
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
         executor.setCorePoolSize(corePoolSize);

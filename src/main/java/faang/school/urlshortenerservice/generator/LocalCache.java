@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 import java.util.Queue;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executor;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 @Component
@@ -24,9 +24,9 @@ public class LocalCache {
     private final Queue<String> hashes;
     private final AtomicBoolean isRefilling;
     private final HashGenerator hashGenerator;
-    private final ExecutorService refillExecutor;
+    private final Executor refillExecutor;
 
-    public LocalCache(HashGenerator hashGenerator, @Qualifier("refillExecutor") ExecutorService refillExecutor) {
+    public LocalCache(HashGenerator hashGenerator, @Qualifier("refillExecutor") Executor refillExecutor) {
         this.hashGenerator = hashGenerator;
         this.refillExecutor = refillExecutor;
         this.hashes = new ConcurrentLinkedQueue<>();

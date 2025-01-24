@@ -14,7 +14,7 @@ repositories {
 
 dependencies {
     /**
-     * Spring boot starters
+     * Spring Boot Starters
      */
     implementation("org.springframework.boot:spring-boot-starter-data-jdbc")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
@@ -37,13 +37,13 @@ dependencies {
     implementation("com.fasterxml.jackson.core:jackson-databind:2.14.2")
     implementation("org.slf4j:slf4j-api:2.0.5")
     implementation("ch.qos.logback:logback-classic:1.4.6")
-    implementation("org.projectlombok:lombok:1.18.26")
-    annotationProcessor("org.projectlombok:lombok:1.18.26")
+    implementation("org.projectlombok:lombok:1.18.36")
+    annotationProcessor("org.projectlombok:lombok:1.18.36")
     implementation("org.mapstruct:mapstruct:1.5.3.Final")
     annotationProcessor("org.mapstruct:mapstruct-processor:1.5.3.Final")
 
     /**
-     * Test containers
+     * Test Containers
      */
     implementation(platform("org.testcontainers:testcontainers-bom:1.17.6"))
     testImplementation("org.testcontainers:junit-jupiter")
@@ -53,23 +53,25 @@ dependencies {
     /**
      * Tests
      */
-    testImplementation("org.junit.jupiter:junit-jupiter-params:5.9.2")
+    testImplementation("org.junit.jupiter:junit-jupiter:5.9.2")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.9.2")
     testImplementation("org.assertj:assertj-core:3.24.2")
-    testImplementation("org.springframework.boot:spring-boot-starter-test")
+    testImplementation("org.mockito:mockito-core:5.0.0")
+    testImplementation("org.mockito:mockito-junit-jupiter:5.0.0")
+    testImplementation("org.springframework.boot:spring-boot-starter-test") {
+        exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
+    }
 }
 
 tasks.withType<Test> {
-    useJUnitPlatform()
+    useJUnitPlatform(){
+        excludeTags("repository")
+    }
+    testLogging {
+        showStandardStreams = true
+    }
 }
-
-val test by tasks.getting(Test::class) { testLogging.showStandardStreams = true }
 
 tasks.bootJar {
     archiveFileName.set("service.jar")
-}
-
-tasks.test {
-    useJUnitPlatform {
-        excludeTags("these tests will not be run")
-    }
 }
