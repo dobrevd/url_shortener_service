@@ -6,10 +6,13 @@ import faang.school.urlshortenerservice.generator.LocalCache;
 import faang.school.urlshortenerservice.mapper.UrlMapper;
 import faang.school.urlshortenerservice.redis.UrlCacheService;
 import faang.school.urlshortenerservice.repository.UrlRepository;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
 
 @Service
 @RequiredArgsConstructor
@@ -26,7 +29,7 @@ public class UrlService {
         var savedUrlWithHash = saveUrlWithHash(urlDto);
         saveUrlInCache(savedUrlWithHash);
 
-        return savedUrlWithHash.getHash();
+        return shortUrlPrefix + savedUrlWithHash.getHash();
     }
 
     private void saveUrlInCache(Url savedUrlWithHash) {
@@ -36,13 +39,21 @@ public class UrlService {
 
     public String getUrl(String shortUrl) {
         var hash = shortUrl.substring(shortUrlPrefix.length());
-        return urlCacheService.getUrl(hash);
+        return urlCacheService.getUrl(hash)
+                .orElse(getLongUrl(shortUrl));
+    }
+
+    private String getLongUrl(String shortUrl) {
+        return urlRepository.findById(shortUrl)
+                .map(Url::getUrl)
+                .orElseThrow(() -> new EntityNotFoundException("Url is not found"));
     }
 
     private Url saveUrlWithHash(UrlDto urlDto){
         var hash = localCache.getHash();
         var url = urlMapper.toEntity(urlDto);
-        url.setHash(shortUrlPrefix + hash);
+        url.setHash(hash);
+        url.setCreatedAt(LocalDateTime.now());
 
         return urlRepository.save(url);
     }

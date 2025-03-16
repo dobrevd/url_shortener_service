@@ -67,7 +67,7 @@ class UrlServiceTest {
     @Test
     void givenShortUrlWhenGetUrlThenReturnUrlFromCache() {
         // given - precondition
-        when(urlCacheService.getUrl(HASH)).thenReturn(URL);
+        when(urlCacheService.getUrl(HASH)).thenReturn(of(URL));
 
         // when - action
         var actualResult = urlService.getUrl(SHORT_URL);
