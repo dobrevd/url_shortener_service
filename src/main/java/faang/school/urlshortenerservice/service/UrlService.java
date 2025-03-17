@@ -13,6 +13,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -28,7 +31,6 @@ public class UrlService {
     public String saveAndGetShortUrl(UrlDto urlDto){
         var savedUrlWithHash = saveUrlWithHash(urlDto);
         saveUrlInCache(savedUrlWithHash);
-
         return shortUrlPrefix + savedUrlWithHash.getHash();
     }
 

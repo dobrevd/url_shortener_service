@@ -1,0 +1,52 @@
+version: '3.8'
+
+services:
+  app:
+    build: .
+    container_name: url_shortener
+    restart: always
+    networks:
+      - url_shortener_network
+    ports:
+      - "8080:8080"
+    env_file:
+      - .env
+    depends_on:
+      master_postgres:
+        condition: service_healthy
+      master_redis:
+        condition: service_healthy
+
+  master_postgres:
+    image: postgres:13.3
+    container_name: master_postgres
+    restart: always
+    networks:
+      - url_shortener_network
+    env_file:
+      - .env
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $SPRING_DATASOURCE_USERNAME -d postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  master_redis:
+    image: redis/redis-stack:latest
+    container_name: master_redis
+    restart: always
+    networks:
+      - url_shortener_network
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+networks:
+  url_shortener_network:
+    name: url_shortener_network
