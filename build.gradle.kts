@@ -73,5 +73,5 @@ tasks.withType<Test> {
 }
 
 tasks.bootJar {
-    archiveFileName.set("service.jar")
+    archiveFileName.set("app.jar")
 }
