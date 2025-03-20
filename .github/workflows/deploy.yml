@@ -31,12 +31,24 @@ jobs:
       - name: Build with Gradle Wrapper
         run: ./gradlew build -x test
 
+      - name: Save JAR as artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: app-jar
+          path: build/libs/app.jar
+
   docker:
     needs: build
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
+
+      - name: Download JAR artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: app-jar
+          path: build/libs
 
       - name: Log in to Docker Hub
         uses: docker/login-action@v2
