@@ -29,7 +29,7 @@ jobs:
         uses: gradle/actions/setup-gradle@v4
 
       - name: Build with Gradle Wrapper
-        run: ./gradlew build -x test || (chmod +x gradlew && ./gradlew build -x test)
+        run: ./gradlew build -x test
 
       - name: Save JAR as artifact
         uses: actions/upload-artifact@v4
@@ -49,9 +49,6 @@ jobs:
         with:
           name: app-jar
           path: build/libs
-
-      - name: Verify artifact download
-        run: ls -l build/libs
 
       - name: Check if JAR exists
         run: ls -l build/libs
