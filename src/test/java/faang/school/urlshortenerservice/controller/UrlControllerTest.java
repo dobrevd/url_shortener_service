@@ -55,8 +55,7 @@ class UrlControllerTest {
         // when - action
         var response = mockMvc.perform(post("/api")
                 .contentType("application/json")
-                .content(urlDtoJson)
-        );
+                .content(urlDtoJson));
 
         // then - verify the output
         response.andExpect(status().isCreated())
@@ -65,12 +64,13 @@ class UrlControllerTest {
     }
 
     @Test
-    void getUrl() throws Exception {
+    void givenValidShortUrlWhenGetUrlThenReturnUrl() throws Exception {
         // given - precondition
-        when(urlService.getUrl(HASH)).thenReturn(URL);
+        when(urlService.getUrl(SHORT_URL)).thenReturn(URL);
 
         // when - action
-        var response = mockMvc.perform(get("/api/{hash}", HASH));
+        var response = mockMvc.perform(get("/api")
+                .param("shortUrl", SHORT_URL));
 
         // then - verify the output
         response.andExpect(status().isFound())

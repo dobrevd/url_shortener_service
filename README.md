@@ -21,3 +21,33 @@ To further optimize the microservice’s performance, I’ve implemented a **loc
 ## Microservice Interaction
 
 Main service will communicate with the URL Shortener through its **REST API**, enabling real microservice-based interaction. This setup allows us to address the various challenges that typically arise in microservice architectures, such as scalability, reliability, and service discovery.
+
+## GitHub Actions Workflow
+
+### 📌 Overview
+This GitHub Actions workflow automates the **build and deployment** process for the Url Shortener Service application.
+
+### 🚀 Trigger Conditions
+- Runs on **push** and **pull request** events to the `master` branch.
+
+### 🛠️ Build Job (`build`)
+✅ **Steps:**
+- 🏗️ **Checkout Repository** – Clones the project repository.
+- 🔧 **Set Permissions** – Grants execute permissions to the Gradle wrapper.
+- ☕ **Set up JDK 17** – Installs Temurin JDK 17.
+- ⚙️ **Configure Gradle** – Sets up Gradle for dependency management.
+- 🏗️ **Build Project** – Runs `./gradlew build -x test` to compile the application.
+- 📦 **Save Artifact** – Stores the generated JAR file for later use.
+
+### 🐳 Docker Job (`docker`)
+✅ **Steps:**
+- 📥 **Download JAR Artifact** – Retrieves the built application from the previous job.
+- 🧐 **Verify JAR File** – Ensures the artifact is available.
+- 🔐 **Log in to Docker Hub** – Uses GitHub Secrets for authentication.
+- 🏗️ **Build Docker Image** – Creates a Docker image for the application.
+- 📤 **Push to Docker Hub** – Publishes the Docker image for deployment.
+
+### 🔄 CI/CD Process
+This workflow ensures **continuous integration and deployment**, making the application **automatically available as a Docker image** on every update to the `master` branch.
+
+## The **Url Shortener Service** can be run locally using **Kubernetes**.

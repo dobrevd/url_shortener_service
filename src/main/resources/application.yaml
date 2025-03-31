@@ -4,9 +4,9 @@ server:
 spring:
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: ${SPRING_DATASOURCE_URL}
-    username: ${SPRING_DATASOURCE_USERNAME}
-    password: ${SPRING_DATASOURCE_PASSWORD}
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/postgres}
+    username: ${SPRING_DATASOURCE_USERNAME:user}
+    password: ${SPRING_DATASOURCE_PASSWORD:password}
 
   jpa:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
@@ -20,18 +20,18 @@ spring:
   liquibase:
     change-log: classpath:db/changelog/db.changelog-master.yaml
 
-  data:
-    redis:
-      host: ${SPRING_DATA_REDIS_HOST}
-      port: ${SPRING_DATA_REDIS_PORT}
-  client-type: lettuce
+#  data:
+#    redis:
+#      host: ${SPRING_DATA_REDIS_HOST:master_redis}
+#      port: ${SPRING_DATA_REDIS_PORT:6379}
+#  client-type: lettuce
 
 logging:
   level:
     root: info
 
 app:
-  short_url_prefix: "https://my_short_url/"
+  short_url_prefix: "my_short_url/"
   local_hash:
     capacity: 20
     min_value: 10
