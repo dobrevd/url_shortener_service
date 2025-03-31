@@ -17,11 +17,14 @@ public class UrlCacheRepository {
 
     public void save(UrlHash url){
         log.info("Saving URL cache: {}", url);
-        template.opsForHash().put(HASH_KEY,url.getHash(), url);
+        template.opsForHash().put(HASH_KEY, url.getHash(), url);
+        var savedUrlHash  = getUrl(url.getHash()).orElse(null);
+        log.info("Saved URL cache: {}", savedUrlHash);
     }
 
-    public Optional<UrlHash> getUrl(String urlHash){
-        log.info("Retrieving URL cache for hash: {}", urlHash);
-        return Optional.ofNullable((UrlHash) template.opsForHash().get(HASH_KEY, urlHash));
+    public Optional<UrlHash> getUrl(String hash){
+        var urlHash = Optional.ofNullable((UrlHash) template.opsForHash().get(HASH_KEY, hash));
+        log.info("Retrieved from Redis UrlHash: {}", urlHash);
+        return urlHash;
     }
 }

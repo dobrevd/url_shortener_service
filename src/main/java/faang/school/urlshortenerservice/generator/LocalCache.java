@@ -48,7 +48,9 @@ public class LocalCache {
         if (hashes.size() <= minValue){
             refillAsync();
         }
-        return hashes.poll();
+        var hash = hashes.poll();
+        log.info("Get new hash: {} from local cache storage", hash);
+        return hash;
     }
 
     public void refillAsync() {

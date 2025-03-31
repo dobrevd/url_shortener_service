@@ -7,7 +7,6 @@ import org.hibernate.validator.constraints.URL;
 import org.springframework.data.redis.core.RedisHash;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
 
 @Data
 @RedisHash(value = "url", timeToLive = 86400)
@@ -18,6 +17,4 @@ public class UrlHash implements Serializable {
     @NotNull
     @URL
     private String url;
-    @NotNull
-    private LocalDateTime createdAt;
 }

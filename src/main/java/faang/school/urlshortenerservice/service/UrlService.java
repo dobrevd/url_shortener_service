@@ -9,17 +9,16 @@ import faang.school.urlshortenerservice.repository.UrlRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 @Setter
+@Slf4j
 public class UrlService {
     @Value("${app.short_url_prefix}")
     private String shortUrlPrefix;
@@ -29,7 +28,7 @@ public class UrlService {
     private final UrlMapper urlMapper;
 
     public String saveAndGetShortUrl(UrlDto urlDto){
-        var savedUrlWithHash = saveUrlWithHash(urlDto);
+        var savedUrlWithHash = saveCreatedUrl(urlDto);
         saveUrlInCache(savedUrlWithHash);
         return shortUrlPrefix + savedUrlWithHash.getHash();
     }
@@ -40,23 +39,39 @@ public class UrlService {
     }
 
     public String getUrl(String shortUrl) {
-        var hash = shortUrl.substring(shortUrlPrefix.length());
+        if (!shortUrl.startsWith(shortUrlPrefix)) {
+            log.error("ShortUrl does not start with {}", shortUrl);
+            throw new IllegalArgumentException("Invalid short URL format");
+        }
+        var hash = getHashFromShortUrl(shortUrl);
         return urlCacheService.getUrl(hash)
-                .orElse(getLongUrl(shortUrl));
+                .orElseGet(() -> getLongUrl(shortUrl));
+    }
+
+    private String getHashFromShortUrl(String shortUrl) {
+        return shortUrl.substring(shortUrlPrefix.length());
     }
 
     private String getLongUrl(String shortUrl) {
-        return urlRepository.findById(shortUrl)
+        var hash = getHashFromShortUrl(shortUrl);
+        log.info("Retrieving from Postgres longUrl with hash: {}", hash);
+
+        return urlRepository.findByHash(hash)
                 .map(Url::getUrl)
                 .orElseThrow(() -> new EntityNotFoundException("Url is not found"));
     }
 
-    private Url saveUrlWithHash(UrlDto urlDto){
+    private Url saveCreatedUrl(UrlDto urlDto){
+        var url = createUrl(urlDto);
+        log.info("Saving url in Postgres: {}", url);
+        return urlRepository.save(url);
+    }
+
+    private Url createUrl(UrlDto urlDto) {
         var hash = localCache.getHash();
         var url = urlMapper.toEntity(urlDto);
         url.setHash(hash);
         url.setCreatedAt(LocalDateTime.now());
-
-        return urlRepository.save(url);
+        return url;
     }
 }
