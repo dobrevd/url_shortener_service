@@ -18,8 +18,6 @@ public class UrlCacheRepository {
     public void save(UrlHash url){
         log.info("Saving URL cache: {}", url);
         template.opsForHash().put(HASH_KEY, url.getHash(), url);
-        var savedUrlHash  = getUrl(url.getHash()).orElse(null);
-        log.info("Saved URL cache: {}", savedUrlHash);
     }
 
     public Optional<UrlHash> getUrl(String hash){

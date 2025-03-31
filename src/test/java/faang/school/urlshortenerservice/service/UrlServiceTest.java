@@ -73,7 +73,6 @@ class UrlServiceTest {
     void givenShortUrlWhenGetUrlThenReturnUrlFromCache() {
         // given - precondition
         when(urlCacheService.getUrl(HASH)).thenReturn(of(URL));
-        when(urlRepository.findById(SHORT_URL)).thenReturn((Optional.of(createUrl())));
 
         // when - action
         var actualResult = urlService.getUrl(SHORT_URL);
@@ -83,7 +82,7 @@ class UrlServiceTest {
         assertThat(actualResult).isEqualTo(URL);
 
         verify(urlCacheService, times(1)).getUrl(HASH);
-        verify(urlRepository, times(1)).findById(SHORT_URL);
+        verifyNoInteractions(urlRepository);
     }
     @Test
     void givenShortUrlWhenGetUrlThenReturnUrlFromDataBase() {
@@ -91,7 +90,7 @@ class UrlServiceTest {
         var url = createUrl();
 
         when(urlCacheService.getUrl(HASH)).thenReturn(Optional.empty());
-        when(urlRepository.findById(SHORT_URL)).thenReturn(of(url));
+        when(urlRepository.findByHash(HASH)).thenReturn(of(url));
 
         // when - action
         var actualResult = urlService.getUrl(SHORT_URL);
@@ -101,14 +100,14 @@ class UrlServiceTest {
         assertThat(actualResult).isEqualTo(URL);
 
         verify(urlCacheService, times(1)).getUrl(HASH);
-        verify(urlRepository, times(1)).findById(SHORT_URL);
+        verify(urlRepository, times(1)).findByHash(HASH);
     }
 
     @Test
     void givenInvalidShortUrlWhenGetUrlThenThrowException() {
         // given - precondition
-        when(urlCacheService.getUrl(HASH)).thenReturn(null);
-        when(urlRepository.findById(SHORT_URL)).thenReturn(empty());
+        when(urlCacheService.getUrl(HASH)).thenReturn(Optional.empty());
+        when(urlRepository.findByHash(HASH)).thenReturn(Optional.empty());
 
         // when - action
         // then - verify the output
@@ -117,6 +116,6 @@ class UrlServiceTest {
                         .isInstanceOf(EntityNotFoundException.class);
 
         verify(urlCacheService, times(1)).getUrl(HASH);
-        verify(urlRepository, times(1)).findById(SHORT_URL);
+        verify(urlRepository, times(1)).findByHash(HASH);
     }
 }
