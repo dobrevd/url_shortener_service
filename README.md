@@ -37,6 +37,8 @@ This GitHub Actions workflow automates the **build and deployment** process for 
 - ☕ **Set up JDK 17** – Installs Temurin JDK 17.
 - ⚙️ **Configure Gradle** – Sets up Gradle for dependency management.
 - 🏗️ **Build Project** – Runs `./gradlew build -x test` to compile the application.
+- 🧪 **Run Tests with JaCoCo** – Executes tests and generates a code coverage report using JaCoCo (via ./gradlew test jacocoTestReport).
+- 📦 **Save JaCoCo Report** – Uploads the generated JaCoCo report as an artifact to track test coverage.
 - 📦 **Save Artifact** – Stores the generated JAR file for later use.
 
 ### 🐳 Docker Job (`docker`)
@@ -51,3 +53,16 @@ This GitHub Actions workflow automates the **build and deployment** process for 
 This workflow ensures **continuous integration and deployment**, making the application **automatically available as a Docker image** on every update to the `master` branch.
 
 ## The **Url Shortener Service** can be run locally using **Kubernetes**.
+
+## 🧪 Code Coverage with JaCoCo
+
+**Url Shortener Service** uses **JaCoCo** to generate code coverage reports and enforce a minimum coverage threshold during testing.
+
+- A **minimum line coverage threshold of 60%** is enforced.
+- The **build will fail** if the actual coverage is below this threshold.
+- Test coverage reports are generated in multiple formats: **HTML** and **XML**.
+
+### 📁 View the Report
+
+
+![img.png](img.png)
