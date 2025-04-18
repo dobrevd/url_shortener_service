@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import faang.school.urlshortenerservice.service.UrlService;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -14,7 +15,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import static faang.school.urlshortenerservice.util.TestDataFactory.HASH;
 import static faang.school.urlshortenerservice.util.TestDataFactory.SHORT_URL;
 import static faang.school.urlshortenerservice.util.TestDataFactory.URL;
 import static faang.school.urlshortenerservice.util.TestDataFactory.createUrlDto;
@@ -28,6 +28,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(MockitoExtension.class)
+@Tag("Tests need to use Testcontainers")
+@Tag("Integration-tests")
 class UrlControllerTest {
     @InjectMocks
     private UrlController urlController;
