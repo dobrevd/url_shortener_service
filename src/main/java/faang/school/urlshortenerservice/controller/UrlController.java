@@ -6,15 +6,18 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.view.RedirectView;
 
+@CrossOrigin(origins = "http://localhost:4200", allowedHeaders = "*",
+        methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.OPTIONS})
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api")
@@ -24,14 +27,13 @@ public class UrlController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public String saveAndGetShortUrl(@RequestBody @Valid UrlDto urlDto){
+    public String saveAndGetShortUrl(@RequestBody @Valid UrlDto urlDto) {
         return urlService.saveAndGetShortUrl(urlDto);
     }
 
     @GetMapping
-    public RedirectView getUrl(@RequestParam("shortUrl") String shortUrl){
+    public String getUrl(@RequestParam("shortUrl") String shortUrl) {
         log.info("Retrieving URL for shortUrl: {}", shortUrl);
-        var url = urlService.getUrl(shortUrl);
-        return new RedirectView(url, true);
+        return urlService.getUrl(shortUrl);
     }
 }
