@@ -24,7 +24,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(MockitoExtension.class)
@@ -75,8 +74,8 @@ class UrlControllerTest {
                 .param("shortUrl", SHORT_URL));
 
         // then - verify the output
-        response.andExpect(status().isFound())
-                .andExpect(redirectedUrl(URL))
+        response.andExpect(status().isOk())
+                .andExpect(content().string(URL))
                 .andDo(print());
     }
 }
