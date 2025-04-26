@@ -58,7 +58,7 @@ This workflow ensures **continuous integration and deployment**, making the appl
 
 **Url Shortener Service** uses **JaCoCo** to generate code coverage reports and enforce a minimum coverage threshold during testing.
 
-- A **minimum line coverage threshold of 60%** is enforced.
+- A **minimum line coverage threshold of 68%** is enforced.
 - The **build will fail** if the actual coverage is below this threshold.
 - Test coverage reports are generated in multiple formats: **HTML** and **XML**.
 
