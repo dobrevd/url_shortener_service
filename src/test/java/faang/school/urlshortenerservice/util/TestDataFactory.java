@@ -2,6 +2,7 @@ package faang.school.urlshortenerservice.util;
 
 import faang.school.urlshortenerservice.dto.UrlDto;
 import faang.school.urlshortenerservice.entity.Url;
+import faang.school.urlshortenerservice.redis.UrlHash;
 import lombok.experimental.UtilityClass;
 
 import java.time.LocalDateTime;
@@ -14,7 +15,7 @@ public final class TestDataFactory {
     public static final String URL = "http://example.com/1";
     public static final String SHORT_URL_PREFIX = "my_short_url/";
     public static final String SHORT_URL = SHORT_URL_PREFIX + HASH;
-
+    public static final String HASH_KEY = "url";
 
     public static Url createUrl(){
         return Url.builder()
@@ -27,6 +28,13 @@ public final class TestDataFactory {
         return UrlDto.builder()
                 .url(URL)
                 .createdAt(CREATED)
+                .build();
+    }
+
+    public static UrlHash createUrlHash(){
+        return UrlHash.builder()
+                .hash(HASH)
+                .url(URL)
                 .build();
     }
 
