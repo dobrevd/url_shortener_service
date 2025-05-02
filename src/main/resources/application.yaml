@@ -20,11 +20,11 @@ spring:
   liquibase:
     change-log: classpath:db/changelog/db.changelog-master.yaml
 
-#  data:
-#    redis:
-#      host: ${SPRING_DATA_REDIS_HOST:master_redis}
-#      port: ${SPRING_DATA_REDIS_PORT:6379}
-#  client-type: lettuce
+  data:
+    redis:
+      host: ${SPRING_DATA_REDIS_HOST:master_redis}
+      port: ${SPRING_DATA_REDIS_PORT:6379}
+  client-type: lettuce
 
 logging:
   level:
