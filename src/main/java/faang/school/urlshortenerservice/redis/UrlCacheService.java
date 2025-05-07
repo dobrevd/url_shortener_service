@@ -12,12 +12,12 @@ import java.util.Optional;
 public class UrlCacheService {
     private final UrlCacheRepository urlCacheRepository;
 
-    public void saveUrlHash(UrlHash url){
+    public void saveUrlHash(UrlHash url) {
         log.info("Saving UrlHash in Redis: {}", url);
         urlCacheRepository.save(url);
     }
 
-    public Optional<String> getUrl(String hash){
+    public Optional<String> getUrl(String hash) {
         log.info("Retrieving from Redis URL cache for hash: {}", hash);
         var url = urlCacheRepository.getUrl(hash)
                 .map(UrlHash::getUrl);

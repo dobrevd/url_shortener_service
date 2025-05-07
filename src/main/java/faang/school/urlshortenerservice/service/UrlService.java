@@ -3,6 +3,8 @@ package faang.school.urlshortenerservice.service;
 import faang.school.urlshortenerservice.dto.UrlDto;
 import faang.school.urlshortenerservice.entity.Url;
 import faang.school.urlshortenerservice.generator.LocalCache;
+import faang.school.urlshortenerservice.kafka.EventType;
+import faang.school.urlshortenerservice.kafka.UrlEventService;
 import faang.school.urlshortenerservice.mapper.UrlMapper;
 import faang.school.urlshortenerservice.redis.UrlCacheService;
 import faang.school.urlshortenerservice.repository.UrlRepository;
@@ -26,16 +28,16 @@ public class UrlService {
     private final LocalCache localCache;
     private final UrlRepository urlRepository;
     private final UrlMapper urlMapper;
+    private final UrlEventService urlEventService;
 
     public String saveAndGetShortUrl(UrlDto urlDto){
         var savedUrlWithHash = saveCreatedUrl(urlDto);
         saveUrlInCache(savedUrlWithHash);
-        return shortUrlPrefix + savedUrlWithHash.getHash();
-    }
+        var shortUrl = shortUrlPrefix + savedUrlWithHash.getHash();
 
-    private void saveUrlInCache(Url savedUrlWithHash) {
-        var urlHash = urlMapper.toUrlHash(savedUrlWithHash);
-        urlCacheService.saveUrlHash(urlHash);
+        urlEventService.sendEvent(shortUrl, savedUrlWithHash.getUrl(), EventType.CREATE);
+
+        return shortUrl;
     }
 
     public String getUrl(String shortUrl) {
@@ -44,12 +46,21 @@ public class UrlService {
             throw new IllegalArgumentException("Invalid short URL format");
         }
         var hash = getHashFromShortUrl(shortUrl);
-        return urlCacheService.getUrl(hash)
+
+        var originalUrl = urlCacheService.getUrl(hash)
                 .orElseGet(() -> getLongUrl(shortUrl));
+
+        urlEventService.sendEvent(shortUrl, originalUrl, EventType.RESOLVE);
+        return originalUrl;
     }
 
     private String getHashFromShortUrl(String shortUrl) {
         return shortUrl.substring(shortUrlPrefix.length());
+    }
+
+    private void saveUrlInCache(Url savedUrlWithHash) {
+        var urlHash = urlMapper.toUrlHash(savedUrlWithHash);
+        urlCacheService.saveUrlHash(urlHash);
     }
 
     private String getLongUrl(String shortUrl) {
