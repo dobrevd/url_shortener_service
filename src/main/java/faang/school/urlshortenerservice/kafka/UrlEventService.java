@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
 import java.util.UUID;
 
 @Service
@@ -20,7 +21,7 @@ public class UrlEventService {
 
     public void sendEvent(String shortUrl, String originalUrl, EventType eventType) {
         var event = createEvent(shortUrl, originalUrl, eventType);
-        kafkaTemplate.send(productCreatedTopic, event);
+        kafkaTemplate.send(productCreatedTopic, event.eventId(), event);
         log.info("Event id: {} is sent", event.eventId());
     }
 
@@ -34,6 +35,7 @@ public class UrlEventService {
                 .shortUrlHash(shortUrl)
                 .originalUrl(originalUrl)
                 .eventType(eventType)
+                .timestamp(Instant.now().toEpochMilli())
                 .build();
     }
 }

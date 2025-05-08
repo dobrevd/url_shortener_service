@@ -2,8 +2,6 @@ package faang.school.urlshortenerservice.kafka;
 
 import lombok.Builder;
 
-import java.time.Instant;
-
 @Builder
 public record UrlShortenerEvent(
          String eventId,
@@ -11,5 +9,5 @@ public record UrlShortenerEvent(
          EventType eventType,
          String shortUrlHash,
          String originalUrl,
-         Instant timestamp
+         long timestamp
 ) {}

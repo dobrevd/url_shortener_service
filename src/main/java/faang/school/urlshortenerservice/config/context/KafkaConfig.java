@@ -26,16 +26,16 @@ public class KafkaConfig {
     private Integer topicReplicationFactor;
     @Value("${spring.kafka.topic-partitions}")
     private Integer topicPartitions;
-    @Value("${spring.kafka.producer.bootstrap-servers}")
+    @Value("${spring.kafka.bootstrap-servers}")
     private String bootstrapServers;
     @Value("${spring.kafka.producer.acks}")
     private String acks;
     @Value("${spring.kafka.producer.delivery-timeout}")
-    private String deliveryTimeout;
+    private Integer deliveryTimeout;
     @Value("${spring.kafka.producer.linger}")
-    private String linger;
+    private Integer linger;
     @Value("${spring.kafka.producer.request-timeout}")
-    private String requestTimeout;
+    private Integer requestTimeout;
     @Value("${spring.kafka.producer.idempotence}")
     private boolean idempotence;
     @Value("${spring.kafka.producer.inflight-requests}")

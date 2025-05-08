@@ -27,11 +27,11 @@ spring:
   client-type: lettuce
 
   kafka:
+    bootstrap-servers: kafka-1:9092
     url-shortener-event-topic: url-shortener-event-topic
     topic-replication-factor: 3
     topic-partitions: 3
     producer:
-      bootstrap-servers: localhost:9092,localhost:9094
       acks: all
       delivery-timeout: 12000
       linger: 0
