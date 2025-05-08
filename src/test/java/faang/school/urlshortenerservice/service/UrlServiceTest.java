@@ -2,6 +2,7 @@ package faang.school.urlshortenerservice.service;
 
 import faang.school.urlshortenerservice.entity.Url;
 import faang.school.urlshortenerservice.generator.LocalCache;
+import faang.school.urlshortenerservice.kafka.UrlEventService;
 import faang.school.urlshortenerservice.mapper.UrlMapper;
 import faang.school.urlshortenerservice.redis.UrlCacheService;
 import faang.school.urlshortenerservice.repository.UrlRepository;
@@ -21,12 +22,10 @@ import static faang.school.urlshortenerservice.util.TestDataFactory.SHORT_URL_PR
 import static faang.school.urlshortenerservice.util.TestDataFactory.URL;
 import static faang.school.urlshortenerservice.util.TestDataFactory.createUrl;
 import static faang.school.urlshortenerservice.util.TestDataFactory.createUrlDto;
-import static java.util.Optional.empty;
 import static java.util.Optional.of;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
@@ -44,10 +43,12 @@ class UrlServiceTest {
     private UrlCacheService urlCacheService;
     @Mock
     private UrlMapper urlMapper;
+    @Mock
+    private UrlEventService urlEventService;
 
     @BeforeEach
     void setUp() {
-        urlService = new UrlService(urlCacheService, localCache, urlRepository, urlMapper);
+        urlService = new UrlService(urlCacheService, localCache, urlRepository, urlMapper, urlEventService);
         urlService.setShortUrlPrefix(SHORT_URL_PREFIX);
     }
 

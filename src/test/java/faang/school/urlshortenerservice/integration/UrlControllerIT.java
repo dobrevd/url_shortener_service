@@ -7,7 +7,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -19,15 +18,18 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @Tag("integration")
 @AutoConfigureMockMvc
-@SpringBootTest
 @ActiveProfiles("test")
 public class UrlControllerIT extends AbstractionBaseIT {
+
     @Value("${test.x-user-id-header}")
-    private String X_USER_ID_HEADER;
+    private String xUserIdHeader;
+
     @Value("${test.user-id}")
-    private String USER_ID;
+    private String userId;
+
     @Autowired
     private MockMvc mockMvc;
+
     @Autowired
     private ObjectMapper objectMapper;
 
@@ -41,7 +43,7 @@ public class UrlControllerIT extends AbstractionBaseIT {
         var response = mockMvc.perform(post("/api")
                 .contentType("application/json")
                 .content(urlDtoJson)
-                .header(X_USER_ID_HEADER, USER_ID)
+                .header(xUserIdHeader, userId)
         );
 
         // then - verify the output
