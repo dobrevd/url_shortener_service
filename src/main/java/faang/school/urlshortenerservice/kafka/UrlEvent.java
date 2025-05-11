@@ -3,7 +3,7 @@ package faang.school.urlshortenerservice.kafka;
 import lombok.Builder;
 
 @Builder
-public record UrlShortenerEvent(
+public record UrlEvent(
          String eventId,
          long userId,
          EventType eventType,

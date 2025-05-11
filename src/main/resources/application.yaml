@@ -27,7 +27,7 @@ spring:
   client-type: lettuce
 
   kafka:
-    bootstrap-servers: kafka-1:9092
+    bootstrap-servers: kafka-1:9092,kafka-2:9092,kafka-3:9092
     url-shortener-event-topic: url-shortener-event-topic
     topic-replication-factor: 3
     topic-partitions: 3

@@ -14,7 +14,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 @Slf4j
 public class UrlEventService {
-    private final KafkaTemplate<String, UrlShortenerEvent> kafkaTemplate;
+    private final KafkaTemplate<String, UrlEvent> kafkaTemplate;
     private final UserContext userContext;
     @Value("${spring.kafka.url-shortener-event-topic}")
     private String productCreatedTopic;
@@ -25,11 +25,11 @@ public class UrlEventService {
         log.info("Event id: {} is sent", event.eventId());
     }
 
-    private UrlShortenerEvent createEvent(String shortUrl, String originalUrl, EventType eventType) {
+    private UrlEvent createEvent(String shortUrl, String originalUrl, EventType eventType) {
         var eventId = UUID.randomUUID().toString();
         var userId = userContext.getUserId();
 
-        return UrlShortenerEvent.builder()
+        return UrlEvent.builder()
                 .eventId(eventId)
                 .userId(userId)
                 .shortUrlHash(shortUrl)

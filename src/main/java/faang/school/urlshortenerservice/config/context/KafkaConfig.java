@@ -1,6 +1,6 @@
 package faang.school.urlshortenerservice.config.context;
 
-import faang.school.urlshortenerservice.kafka.UrlShortenerEvent;
+import faang.school.urlshortenerservice.kafka.UrlEvent;
 import lombok.RequiredArgsConstructor;
 import org.apache.kafka.clients.admin.NewTopic;
 import org.apache.kafka.clients.producer.ProducerConfig;
@@ -57,12 +57,12 @@ public class KafkaConfig {
     }
 
     @Bean
-    ProducerFactory<String, UrlShortenerEvent> producerFactory() {
+    ProducerFactory<String, UrlEvent> producerFactory() {
         return new DefaultKafkaProducerFactory<>(producerConfigs());
     }
 
     @Bean
-    KafkaTemplate<String, UrlShortenerEvent> kafkaTemplate(ProducerFactory<String, UrlShortenerEvent> producerFactory) {
+    KafkaTemplate<String, UrlEvent> kafkaTemplate(ProducerFactory<String, UrlEvent> producerFactory) {
         return new KafkaTemplate<>(producerFactory);
     }
 
