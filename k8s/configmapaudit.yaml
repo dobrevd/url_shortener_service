@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: url-audit-config
+data:
+  AUDIT_KAFKA_TOPIC: "url-shortener-event-topic"
+  SPRING_KAFKA_BOOTSTRAP_SERVERS: "kafka-service:9092"
+  SPRING_DATA_MONGODB_URI: "mongodb://audit-mongodb:27017/auditdatabase"
+  SPRING_DATA_MONGODB_MAPPING_STRICT: "false"

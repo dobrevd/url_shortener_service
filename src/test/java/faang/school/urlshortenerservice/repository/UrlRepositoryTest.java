@@ -13,7 +13,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-@Tag("Tests_need_to_use_Testcontainers")
+@Tag("Testcontainers")
 class UrlRepositoryTest extends AbstractionBaseTest {
     @Autowired
     private UrlRepository repository;

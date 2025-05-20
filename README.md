@@ -1,8 +1,28 @@
-# URL Shortener Service
+# 🌐 URL Shortener Service
 
-## Overview
+## 📝 Overview
 
-The **URL Shortener Service** is a microservice that allows users to take long referral links from our application and shorten them into compact URLs. This is especially useful for users who want to share links on social media, where long URLs can appear unattractive and inconvenient to use.
+The **URL Shortener Service** is a backend microservice designed to convert long URLs—such as referral or tracking links—into short, user-friendly URLs. This is particularly beneficial for sharing links on social media platforms, where shorter URLs improve readability and aesthetics.
+
+This service is part of a larger **microservice-based URL shortening platform**, which consists of the following components:
+
+- **URL Shortener Service** (current microservice)
+- **URL Audit Service** (for tracking and analytics)
+- **Frontend Application** (for user interaction)
+
+---
+
+## 🔗 Source Code Repositories
+
+- 👉 [**Frontend Application**](https://github.com/dobrevd/url-shortener-frontend)  
+  *Angular-based user interface for shortening and managing URLs.*
+
+- 👉 [**URL Shortener Service (Backend)**](https://github.com/dobrevd/url_shortener_service)  
+  *Core logic for generating and resolving short links.*
+
+- 👉 [**URL Audit Service**](https://github.com/dobrevd/url-audit-service)  
+  *Tracks and logs usage of shortened URLs for analysis and reporting.*
+
 
 ## Features
 
