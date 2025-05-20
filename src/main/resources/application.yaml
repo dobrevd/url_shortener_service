@@ -4,9 +4,9 @@ server:
 spring:
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/postgres}
-    username: ${SPRING_DATASOURCE_USERNAME:user}
-    password: ${SPRING_DATASOURCE_PASSWORD:password}
+    url: ${SPRING_DATASOURCE_URL}
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
 
   jpa:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
@@ -22,26 +22,26 @@ spring:
 
   data:
     redis:
-      host: ${SPRING_DATA_REDIS_HOST:master_redis}
-      port: ${SPRING_DATA_REDIS_PORT:6379}
-  client-type: lettuce
+      host: ${SPRING_DATA_REDIS_HOST}
+      port: ${SPRING_DATA_REDIS_PORT}
+      client-type: lettuce
 
   kafka:
-    bootstrap-servers: ${SPRING_KAFKA_BOOTSTRAP_SERVERS:kafka-service:9092}
-    url-shortener-event-topic: ${SPRING_KAFKA_URL_SHORTENER_EVENT_TOPIC:url-shortener-event-topic}
-    topic-replication-factor: ${SPRING_KAFKA_TOPIC_REPLICATION_FACTOR:1}
-    topic-partitions: ${SPRING_KAFKA_TOPIC_PARTITIONS:3}
+    bootstrap-servers: ${SPRING_KAFKA_BOOTSTRAP_SERVERS}
+    url-shortener-event-topic: ${SPRING_KAFKA_URL_SHORTENER_EVENT_TOPIC}
+    topic-replication-factor: ${SPRING_KAFKA_TOPIC_REPLICATION_FACTOR}
+    topic-partitions: ${SPRING_KAFKA_TOPIC_PARTITIONS}
     producer:
-      acks: ${SPRING_KAFKA_PRODUCER_ACKS:all}
-      delivery-timeout: ${SPRING_KAFKA_PRODUCER_DELIVERY_TIMEOUT:12000}
-      linger: ${SPRING_KAFKA_PRODUCER_LINGER:0}
-      request-timeout: ${SPRING_KAFKA_PRODUCER_REQUEST_TIMEOUT:3000}
-      idempotence: ${SPRING_KAFKA_PRODUCER_IDEMPOTENCE:true}
-      inflight-requests: ${SPRING_KAFKA_PRODUCER_INFLIGHT_REQUESTS:5}
+      acks: ${SPRING_KAFKA_PRODUCER_ACKS}
+      delivery-timeout: ${SPRING_KAFKA_PRODUCER_DELIVERY_TIMEOUT}
+      linger: ${SPRING_KAFKA_PRODUCER_LINGER}
+      request-timeout: ${SPRING_KAFKA_PRODUCER_REQUEST_TIMEOUT}
+      idempotence: ${SPRING_KAFKA_PRODUCER_IDEMPOTENCE}
+      inflight-requests: ${SPRING_KAFKA_PRODUCER_INFLIGHT_REQUESTS}
       properties:
-        retries: ${SPRING_KAFKA_PRODUCER_PROPERTIES_RETRIES:3}
-        compression.type: ${SPRING_KAFKA_PRODUCER_PROPERTIES_COMPRESSION_TYPE:snappy}
-        batch.size: ${SPRING_KAFKA_PRODUCER_PROPERTIES_BATCH_SIZE:16384}
+        retries: ${SPRING_KAFKA_PRODUCER_PROPERTIES_RETRIES}
+        compression.type: ${SPRING_KAFKA_PRODUCER_PROPERTIES_COMPRESSION_TYPE}
+        batch.size: ${SPRING_KAFKA_PRODUCER_PROPERTIES_BATCH_SIZE}
 
 aws:
   region: ""
@@ -60,7 +60,7 @@ app:
     min_value: 10
   hash:
     batch_size: 200
-    expiration_period_hours: 1
+#    expiration_period_hours: 1
 
   async:
     hash_generator:

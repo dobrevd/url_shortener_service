@@ -19,44 +19,11 @@ spec:
           ports:
             - containerPort: 8080
           env:
-            - name: SPRING_DATA_REDIS_HOST
-              value: redis-cluster-ip-service
-            - name: SPRING_DATA_REDIS_PORT
-              value: '6379'
-            - name: SPRING_DATASOURCE_USERNAME
-              value: user
-            - name: SPRING_DATASOURCE_URL
-              value: 'jdbc:postgresql://postgres-cluster-ip-service:5432/postgres'
-            - name: POSTGRES_DB
-              value: postgres
             - name: SPRING_DATASOURCE_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: pgpassword
                   key: PGPASSWORD
-            - name: SPRING_KAFKA_BOOTSTRAP_SERVERS
-              value: kafka-service:9092
-            - name: SPRING_KAFKA_URL_SHORTENER_EVENT_TOPIC
-              value: url-shortener-event-topic
-            - name: SPRING_KAFKA_TOPIC_REPLICATION_FACTOR
-              value: "1"
-            - name: SPRING_KAFKA_TOPIC_PARTITIONS
-              value: "3"
-            - name: SPRING_KAFKA_PRODUCER_ACKS
-              value: all
-            - name: SPRING_KAFKA_PRODUCER_DELIVERY_TIMEOUT
-              value: "12000"
-            - name: SPRING_KAFKA_PRODUCER_LINGER
-              value: "0"
-            - name: SPRING_KAFKA_PRODUCER_REQUEST_TIMEOUT
-              value: "3000"
-            - name: SPRING_KAFKA_PRODUCER_IDEMPOTENCE
-              value: "true"
-            - name: SPRING_KAFKA_PRODUCER_INFLIGHT_REQUESTS
-              value: "5"
-            - name: SPRING_KAFKA_PRODUCER_PROPERTIES_RETRIES
-              value: "3"
-            - name: SPRING_KAFKA_PRODUCER_PROPERTIES_COMPRESSION_TYPE
-              value: snappy
-            - name: SPRING_KAFKA_PRODUCER_PROPERTIES_BATCH_SIZE
-              value: "16384"
+          envFrom:
+            - configMapRef:
+                name: url-shortener-config

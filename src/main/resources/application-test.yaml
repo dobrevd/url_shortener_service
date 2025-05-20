@@ -4,13 +4,27 @@ test:
 
 spring:
   kafka:
-    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS}
+    bootstrap-servers: kafka-1:9092,kafka-2:9092,kafka-3:9092
     url-shortener-event-topic: url-shortener-event-topic
+    topic-replication-factor: 1
+    topic-partitions: 3
+    producer:
+      acks: all
+      delivery-timeout: 12000
+      linger: 0
+      request-timeout: 3000
+      idempotence: true
+      inflight-requests: 5
+      properties:
+        retries: 3
+        compression.type: snappy
+        batch.size: 16384
+
   datasource:
-    url: ${DATASOURCE_URL}
-    username: ${DATASOURCE_USERNAME}
-    password: ${DATASOURCE_PASSWORD}
+    url: jdbc:postgresql://master_postgres:5432/postgres
+    username: user
+    password: password
   data:
     redis:
-      host: ${REDIS_HOST}
-      port: ${REDIS_PORT}
+      host: master_redis
+      port: 6379
