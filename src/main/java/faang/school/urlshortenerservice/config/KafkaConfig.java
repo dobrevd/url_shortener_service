@@ -1,4 +1,4 @@
-package faang.school.urlshortenerservice.config.context;
+package faang.school.urlshortenerservice.config;
 
 import faang.school.urlshortenerservice.kafka.UrlEvent;
 import lombok.RequiredArgsConstructor;

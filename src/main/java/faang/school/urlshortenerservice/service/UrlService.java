@@ -36,7 +36,7 @@ public class UrlService {
         var shortUrl = shortUrlPrefix + savedUrlWithHash.getHash();
 
         urlEventService.sendEvent(shortUrl, savedUrlWithHash.getUrl(), EventType.CREATE);
-
+        urlEventService.sendEventToSqs(shortUrl, savedUrlWithHash.getUrl(), EventType.CREATE);
         return shortUrl;
     }
 
@@ -51,6 +51,7 @@ public class UrlService {
                 .orElseGet(() -> getLongUrl(shortUrl));
 
         urlEventService.sendEvent(shortUrl, originalUrl, EventType.RESOLVE);
+        urlEventService.sendEventToSqs(shortUrl, originalUrl, EventType.RESOLVE);
         return originalUrl;
     }
 

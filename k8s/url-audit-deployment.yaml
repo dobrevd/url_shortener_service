@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: url-audit-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: url-audit
+  template:
+    metadata:
+      labels:
+        app: url-audit
+    spec:
+      containers:
+        - name: url-audit-container
+          image: dobrevd/url-audit-service
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8080
+          envFrom:
+            - configMapRef:
+                name: url-audit-config

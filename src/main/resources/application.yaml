@@ -27,21 +27,27 @@ spring:
   client-type: lettuce
 
   kafka:
-    bootstrap-servers: kafka-1:9092,kafka-2:9092,kafka-3:9092
-    url-shortener-event-topic: url-shortener-event-topic
-    topic-replication-factor: 3
-    topic-partitions: 3
+    bootstrap-servers: ${SPRING_KAFKA_BOOTSTRAP_SERVERS:kafka-service:9092}
+    url-shortener-event-topic: ${SPRING_KAFKA_URL_SHORTENER_EVENT_TOPIC:url-shortener-event-topic}
+    topic-replication-factor: ${SPRING_KAFKA_TOPIC_REPLICATION_FACTOR:1}
+    topic-partitions: ${SPRING_KAFKA_TOPIC_PARTITIONS:3}
     producer:
-      acks: all
-      delivery-timeout: 12000
-      linger: 0
-      request-timeout: 3000
-      idempotence: true
-      inflight-requests: 5
+      acks: ${SPRING_KAFKA_PRODUCER_ACKS:all}
+      delivery-timeout: ${SPRING_KAFKA_PRODUCER_DELIVERY_TIMEOUT:12000}
+      linger: ${SPRING_KAFKA_PRODUCER_LINGER:0}
+      request-timeout: ${SPRING_KAFKA_PRODUCER_REQUEST_TIMEOUT:3000}
+      idempotence: ${SPRING_KAFKA_PRODUCER_IDEMPOTENCE:true}
+      inflight-requests: ${SPRING_KAFKA_PRODUCER_INFLIGHT_REQUESTS:5}
       properties:
-        retries: 3
-        compression.type: snappy
-        batch.size: 16384
+        retries: ${SPRING_KAFKA_PRODUCER_PROPERTIES_RETRIES:3}
+        compression.type: ${SPRING_KAFKA_PRODUCER_PROPERTIES_COMPRESSION_TYPE:snappy}
+        batch.size: ${SPRING_KAFKA_PRODUCER_PROPERTIES_BATCH_SIZE:16384}
+
+aws:
+  region: ""
+  sqs:
+    queue: url-shortener-event-queue
+
 
 logging:
   level:

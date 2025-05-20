@@ -22,3 +22,10 @@ spec:
                 name: frontend-cluster-ip-service
                 port:
                   number: 80
+          - path: /api/audit
+            pathType: Prefix
+            backend:
+              service:
+                name: url-audit-cluster-ip-service
+                port:
+                  number: 8082

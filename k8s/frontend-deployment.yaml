@@ -15,5 +15,6 @@ spec:
       containers:
         - name: frontend-angular-container
           image: dobrevd/url-shortener-angular-frontend
+          imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 80
