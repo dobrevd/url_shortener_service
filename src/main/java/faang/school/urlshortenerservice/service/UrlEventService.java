@@ -1,13 +1,17 @@
-package faang.school.urlshortenerservice.kafka;
+package faang.school.urlshortenerservice.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.urlshortenerservice.config.context.UserContext;
+import faang.school.urlshortenerservice.kafka.EventType;
+import faang.school.urlshortenerservice.kafka.UrlEvent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
+import software.amazon.awssdk.services.sns.SnsClient;
+import software.amazon.awssdk.services.sns.model.PublishRequest;
 
 import java.time.Instant;
 import java.util.UUID;
@@ -20,8 +24,9 @@ public class UrlEventService {
     private final UserContext userContext;
     @Value("${spring.kafka.url-shortener-event-topic}")
     private String productCreatedTopic;
-    @Value("${aws.sqs.queue}")
-    private String urlEventQueueUrl;
+    @Value("${aws.sns.topic}")
+    private String urlEventSnsTopic;
+    private final SnsClient snsClient;
 
     public void sendEvent(String shortUrl, String originalUrl, EventType eventType) {
         var event = createEvent(shortUrl, originalUrl, eventType);
@@ -29,15 +34,22 @@ public class UrlEventService {
         log.info("Event id: {} is sent", event.eventId());
     }
 
-    public void sendEventToSqs(String shortUrl, String originalUrl, EventType eventType){
+    public void sendEventToSns(String shortUrl, String originalUrl, EventType eventType){
         var event = createEvent(shortUrl, originalUrl, eventType);
-
+        String messageBody ="";
         try {
-            String messageBody = new ObjectMapper().writeValueAsString(event);
-            log.info("SQS: Event id {} sent", event.eventId());
+            messageBody = new ObjectMapper().writeValueAsString(event);
+            log.info("SNS: Event id {} sent", event.eventId());
         } catch (JsonProcessingException e) {
-            log.error("Failed to serialize UrlEvent for SQS", e);
+            log.error("Failed to serialize UrlEvent for SNS", e);
         }
+
+        PublishRequest request = PublishRequest.builder()
+                .topicArn(urlEventSnsTopic)
+                .message(messageBody)
+                .build();
+
+        snsClient.publish(request);
     }
 
     private UrlEvent createEvent(String shortUrl, String originalUrl, EventType eventType) {

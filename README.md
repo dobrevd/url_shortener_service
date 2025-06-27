@@ -4,43 +4,57 @@
 
 The **URL Shortener Service** is a backend microservice designed to convert long URLs—such as referral or tracking links—into short, user-friendly URLs. This is particularly beneficial for sharing links on social media platforms, where shorter URLs improve readability and aesthetics.
 
-This service is part of a larger **microservice-based URL shortening platform**, which consists of the following components:
+This service is part of a **microservice-based URL shortening app**. The app can be deployed locally using **Docker Compose** or on a **Kubernetes cluster**, and consists of the following components:
 
-- **URL Shortener Service** (current microservice)
-- **URL Audit Service** (for tracking and analytics)
-- **Frontend Application** (for user interaction)
-
----
-
-## 🔗 Source Code Repositories
-
-- 👉 [**Frontend Application**](https://github.com/dobrevd/url-shortener-frontend)  
-  *Angular-based user interface for shortening and managing URLs.*
-
-- 👉 [**URL Shortener Service (Backend)**](https://github.com/dobrevd/url_shortener_service)  
-  *Core logic for generating and resolving short links.*
-
-- 👉 [**URL Audit Service**](https://github.com/dobrevd/url-audit-service)  
-  *Tracks and logs usage of shortened URLs for analysis and reporting.*
+- 🔗 [**URL Shortener Service**](https://github.com/dobrevd/url_shortener_service) — The core backend service for creating and resolving shortened URLs.
+- 📈 [**URL Audit Service**](https://github.com/dobrevd/url-audit-service) — Responsible for logging and analyzing user interactions for auditing purposes.
+- 🖥️ [**Frontend Application**](https://github.com/dobrevd/url-shortener-frontend) — A user-friendly web interface for interacting with the system.
+- 📊 [**URL Stats Service**](https://github.com/dobrevd/url_stats_service) — A microservice (currently under development) for providing real-time and historical statistics on URL usage. It will be deployed on **AWS ECS with Fargate**.
+- 🏗️ [**URL Stats Service – Infrastructure as Code with AWS CDK (Java)**](https://github.com/dobrevd/url_shortener_stats_cdk) — Infrastructure-as-Code solution for deploying the **URL Stats Service** using the **AWS Cloud Development Kit (CDK)** in **Java**. This repository enables scalable, maintainable, and repeatable AWS deployments, automating cloud infrastructure provisioning and management.
 
 
 ## Features
 
 The primary function of the service is to **shorten URLs**, but it also includes several advanced features such as:
 
-- **Caching**: Both local (in-memory) and using Redis for improved performance.
-- **Multithreading**: Handles multiple requests concurrently for efficient processing.
-- **Database Integration**: Works with both Postgres and Redis databases.
-- **REST API**: Exposes a clean, REST-based interface for easy interaction.
-- **Resource Reuse Scheduler**: Optimizes resource management by scheduling the reuse of resources.
+- **Database Integration**: The application integrates with a PostgreSQL database. It uses a **custom database sequence** (`unique_number_seq`) to generate unique numeric identifiers, which are then encoded into Base62 strings to serve as URL hashes.
+The `url` table stores entities representing the mapping between **short hashes** and their corresponding **original (long) URLs**, along with metadata such as creation timestamps. Each hash is unique and enforced via a unique constraint in the database.
 
-## Performance Optimization
+- **Local Caching**: Local caching is implemented using a thread-safe `ConcurrentLinkedQueue` to store pre-generated hashes, allowing efficient and safe retrieval under high concurrency without accessing PostgreSQL each time.
+Upon application startup, the queue is initialized with hashes retrieved from PostgreSQL. These hashes are generated using a database sequence (`nextval`) and encoded via a `Base62Encoder`.
+If the number of available hashes in the queue drops below a configured threshold (`minValue`), the cache is automatically refilled *asynchronously* in the background. This design ensures low-latency access to unique hashes while minimizing database load.
 
-To further optimize the microservice’s performance, I’ve implemented a **local cache** directly in memory using a **thread-safe data structure**, significantly improving overall efficiency and reducing latency.
+- **General Caching**: Redis is used to implement the Cache-Aside Strategy. Frequently accessed data is first looked up in Redis; if not found (cache miss), it is retrieved from the database, returned to the caller, and then cached in Redis for future access. This improves performance and reduces load on the database.
 
-## Microservice Interaction
+- **Resource Scheduler**:  In addition to on-demand generation, hashes are also generated **periodically** based on a configurable cron schedule. This background task proactively fills the database with fresh hashes, ensuring availability for both immediate and future needs.
 
-Main service will communicate with the URL Shortener through its **REST API**, enabling real microservice-based interaction. This setup allows us to address the various challenges that typically arise in microservice architectures, such as scalability, reliability, and service discovery.
+## 🔄 Microservice Interaction
+
+The URL Shortener platform enables seamless microservice communication through two main mechanisms:
+
+- 📡 **REST API** — Used by the **Frontend Application** to interact with the **URL Shortener Service**.
+- 📨 **Kafka Events** — The **URL Shortener Service** publishes events to **Kafka**, which are consumed by the **URL Audit Service** for tracking and analytics.
+
+This architecture ensures loose coupling, scalability, and real-time data processing across services.
+
+## ⚙️ Kafka Producer Configuration
+- **`BOOTSTRAP_SERVERS_CONFIG`** — List of Kafka broker addresses to connect to.
+
+- **`KEY_SERIALIZER_CLASS_CONFIG`** — Serializer for the message key (e.g., `StringSerializer`).
+
+- **`VALUE_SERIALIZER_CLASS_CONFIG`** — Serializer for the message value (e.g., `JsonSerializer`).
+
+- **`ACKS_CONFIG`** — Defines the number of acknowledgments the producer requires (`all` ensures strongest durability).
+
+- **`DELIVERY_TIMEOUT_MS_CONFIG`** — Max time Kafka will attempt to deliver a message before failing.
+
+- **`LINGER_MS_CONFIG`** — Delay in milliseconds to allow batching of more messages for improved throughput.
+
+- **`REQUEST_TIMEOUT_MS_CONFIG`** — Time to wait for broker response before considering the request as failed.
+
+- **`ENABLE_IDEMPOTENCE_CONFIG`** — Ensures no duplicate messages are sent on retries (for exactly-once delivery).
+
+- **`MAX_IN_FLIGHT_REQUESTS_PER_CONNECTION`** — Max number of unacknowledged requests per connection (≤5 when idempotence is enabled).
 
 ## GitHub Actions Workflow
 
