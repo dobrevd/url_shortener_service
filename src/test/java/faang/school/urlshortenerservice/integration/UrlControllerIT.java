@@ -7,14 +7,20 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
+import software.amazon.awssdk.services.sns.SnsClient;
+import software.amazon.awssdk.services.sns.model.PublishRequest;
+import software.amazon.awssdk.services.sns.model.PublishResponse;
 
 import static faang.school.urlshortenerservice.util.TestDataFactory.createUrlDto;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.mockito.ArgumentMatchers.any;
 
 @Tag("integration")
 @AutoConfigureMockMvc
@@ -26,6 +32,8 @@ public class UrlControllerIT extends AbstractionBaseIT {
 
     @Value("${test.user-id}")
     private String userId;
+    @MockBean
+    private SnsClient snsClient;
 
     @Autowired
     private MockMvc mockMvc;
@@ -38,6 +46,9 @@ public class UrlControllerIT extends AbstractionBaseIT {
         // given - precondition
         var urlDto = createUrlDto();
         var urlDtoJson = objectMapper.writeValueAsString(urlDto);
+
+        when(snsClient.publish(any(PublishRequest.class)))
+                .thenReturn(PublishResponse.builder().messageId("abc-123").build());
 
         // when - action
         var response = mockMvc.perform(post("/api")

@@ -50,7 +50,7 @@ dependencies {
     /**
      * AWS
      */
-    implementation("com.amazonaws:aws-java-sdk-sqs:1.12.707")
+    implementation("software.amazon.awssdk:sns:2.25.17")
 
     /**
      * Test Containers

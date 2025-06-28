@@ -100,7 +100,7 @@ services:
       - KAFKA_CFG_INTER_BROKER_LISTENER_NAME=PLAINTEXT
 
   front_app:
-    image: url-shortener-angular-frontend
+    image: url-shortener-angular-frontend:dev
     container_name: url-shortener-frontend
     restart: always
     ports:

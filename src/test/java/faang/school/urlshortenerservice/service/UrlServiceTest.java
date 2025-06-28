@@ -2,7 +2,6 @@ package faang.school.urlshortenerservice.service;
 
 import faang.school.urlshortenerservice.entity.Url;
 import faang.school.urlshortenerservice.generator.LocalCache;
-import faang.school.urlshortenerservice.kafka.UrlEventService;
 import faang.school.urlshortenerservice.mapper.UrlMapper;
 import faang.school.urlshortenerservice.redis.UrlCacheService;
 import faang.school.urlshortenerservice.repository.UrlRepository;

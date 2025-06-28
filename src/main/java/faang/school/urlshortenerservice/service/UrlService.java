@@ -4,7 +4,6 @@ import faang.school.urlshortenerservice.dto.UrlDto;
 import faang.school.urlshortenerservice.entity.Url;
 import faang.school.urlshortenerservice.generator.LocalCache;
 import faang.school.urlshortenerservice.kafka.EventType;
-import faang.school.urlshortenerservice.kafka.UrlEventService;
 import faang.school.urlshortenerservice.mapper.UrlMapper;
 import faang.school.urlshortenerservice.redis.UrlCacheService;
 import faang.school.urlshortenerservice.repository.UrlRepository;
@@ -36,7 +35,7 @@ public class UrlService {
         var shortUrl = shortUrlPrefix + savedUrlWithHash.getHash();
 
         urlEventService.sendEvent(shortUrl, savedUrlWithHash.getUrl(), EventType.CREATE);
-        urlEventService.sendEventToSqs(shortUrl, savedUrlWithHash.getUrl(), EventType.CREATE);
+        urlEventService.sendEventToSns(shortUrl, savedUrlWithHash.getUrl(), EventType.CREATE);
         return shortUrl;
     }
 
@@ -51,7 +50,7 @@ public class UrlService {
                 .orElseGet(() -> getLongUrl(shortUrl));
 
         urlEventService.sendEvent(shortUrl, originalUrl, EventType.RESOLVE);
-        urlEventService.sendEventToSqs(shortUrl, originalUrl, EventType.RESOLVE);
+        urlEventService.sendEventToSns(shortUrl, originalUrl, EventType.RESOLVE);
         return originalUrl;
     }
 

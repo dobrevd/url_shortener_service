@@ -44,9 +44,10 @@ spring:
         batch.size: ${SPRING_KAFKA_PRODUCER_PROPERTIES_BATCH_SIZE}
 
 aws:
-  region: ""
-  sqs:
-    queue: url-shortener-event-queue
+  region: eu-central-1
+
+  sns:
+    topic: url-events-topic
 
 
 logging:
