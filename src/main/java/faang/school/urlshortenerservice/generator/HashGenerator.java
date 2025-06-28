@@ -6,7 +6,6 @@ import faang.school.urlshortenerservice.repository.HashRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -34,7 +33,6 @@ public class HashGenerator {
                 .toList());
     }
 
-    @Async("taskExecutor")
     public CompletableFuture<List<String>> getHashesAsync(int batchHashSize){
         return CompletableFuture.supplyAsync(() -> getHashes(batchHashSize));
     }
