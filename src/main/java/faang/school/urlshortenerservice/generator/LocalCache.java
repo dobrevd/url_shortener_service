@@ -15,16 +15,16 @@ import java.util.concurrent.atomic.AtomicBoolean;
 @Component
 @Slf4j
 public class LocalCache {
+    private final Queue<String> hashes;
+    private final AtomicBoolean isRefilling;
+    private final HashGenerator hashGenerator;
+    private final Executor refillExecutor;
     @Value("${app.local_hash.capacity:9000}")
     private int capacity;
     @Value("${app.local_hash.min_value:1000}")
     private int minValue;
     @Value("${app.async.local_hash_refill.pool_size:10}")
     private int threadsNumber;
-    private final Queue<String> hashes;
-    private final AtomicBoolean isRefilling;
-    private final HashGenerator hashGenerator;
-    private final Executor refillExecutor;
 
     public LocalCache(HashGenerator hashGenerator, @Qualifier("refillExecutor") Executor refillExecutor) {
         this.hashGenerator = hashGenerator;
@@ -36,6 +36,7 @@ public class LocalCache {
     @PostConstruct
     public void init() {
         try {
+            hashGenerator.generateAndSaveHashes();
             hashes.addAll(hashGenerator.getHashes(capacity));
             log.info("LocalCache initialized with {} hashes", hashes.size());
         } catch (Exception e) {
@@ -44,8 +45,8 @@ public class LocalCache {
         }
     }
 
-    public String getHash(){
-        if (hashes.size() <= minValue){
+    public String getHash() {
+        if (hashes.size() <= minValue) {
             refillAsync();
         }
         var hash = hashes.poll();
@@ -55,20 +56,18 @@ public class LocalCache {
 
     public void refillAsync() {
         if (isRefilling.compareAndSet(false, true)) {
-            CompletableFuture.runAsync(() -> {
-                hashGenerator.getHashesAsync(capacity)
-                        .thenAccept(newHashes -> {
-                            hashes.addAll(newHashes);
-                            log.info("Successfully refilled LocalCache with {} hashes", newHashes.size());
-                        })
-                        .exceptionally(ex -> {
-                            log.error("Error refilling LocalCache: ", ex);
-                            return null;
-                        })
-                        .whenComplete((result, ex) -> {
-                            isRefilling.set(false);
-                        });
-            }, refillExecutor);
+            CompletableFuture
+                    .runAsync(hashGenerator::generateAndSaveHashes, refillExecutor)
+                    .thenCompose(v -> hashGenerator.getHashesAsync(capacity))
+                    .thenAccept(newHashes -> {
+                        hashes.addAll(newHashes);
+                        log.info("Successfully refilled LocalCache with {} hashes", newHashes.size());
+                    })
+                    .exceptionally(ex -> {
+                        log.error("Error refilling LocalCache: ", ex);
+                        return null;
+                    })
+                    .whenComplete((result, ex) -> isRefilling.set(false));
         }
     }
 }
