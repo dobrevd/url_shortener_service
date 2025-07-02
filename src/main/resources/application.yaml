@@ -61,17 +61,10 @@ app:
     min_value: 10
   hash:
     batch_size: 200
-#    expiration_period_hours: 1
 
-  async:
-    hash_generator:
-      core_pool_size: 5
-      max_pool_size: 10
-      queue_capacity: 500
-      thread_name_prefix: "AsyncExecutor-"
   local_hash_refill:
-    core_pool_size: 5
-    max_pool_size: 10
+    core_pool_size: 1
+    max_pool_size: 3
     queue_capacity: 500
     thread_name_prefix: "RefillExecutor-"
   scheduling:
